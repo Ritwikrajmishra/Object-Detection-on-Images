@@ -1,8 +1,10 @@
+mouse_img = "";
 status1 = "";
+objects = [];
 
 function preload()
 {
-    mouse_img = loadImage("20210908_184133.jpg")
+    mouse_img = loadImage("20210908_184133.jpg");
 }
 
 function setup()
@@ -17,16 +19,27 @@ function modelLoaded()
 {
     console.log("Model Loaded!");
     status1 = true;
-    objectDetector.detect(img, gotResults);
+    objectDetector.detect(mouse_img, gotResults);
 }
 
 function draw()
 {
     image(mouse_img, 0, 0, 600, 500);
 
-    rect(50, 50, 500, 400);
-    noFill();
-    stroke('#FF0000');
+    if(status1 != "")
+    {
+        for (i = 0; i < objects.length; i++)
+        {
+            document.getElementById("status").innerHTML = "Status : Object Detected";
+
+            fill("#FF0000");
+            percent = floor(objects[i].confidence * 100);
+            text(objects[i].label + " " + percent + "%", objects[i].x + 15, objects[i].y + 15);
+            noFill();
+            stroke("#FF0000");
+            rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
+        }
+    }
 }
 
 function back()
@@ -41,4 +54,5 @@ function gotResults(error, results)
         console.error(error);
     }
     console.log(results);
+    objects = results;
 }
